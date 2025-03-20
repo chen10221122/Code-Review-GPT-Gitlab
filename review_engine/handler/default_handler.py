@@ -71,14 +71,27 @@ def generate_review_note(change, model):
         response_content = remove_think_content(response_content)
 
         log.info(f"模型返回内容：\n{response_content}")
-        total_tokens = model.get_respond_tokens()
+
+        try:
+            total_tokens = model.get_respond_tokens()
+            tokens_info = f"({total_tokens} tokens) "
+        except (AttributeError, Exception) as e:
+            log.warning(f"无法获取 tokens 信息: {str(e)}")
+            tokens_info = ""
+
+        # total_tokens = model.get_respond_tokens()
+
         review_note = f"# 📚`{new_path}`" + "\n\n"
-        review_note += f'({total_tokens} tokens) {"AI review 意见如下:"}' + "\n\n"
+        review_note += f'{tokens_info}{"AI review 意见如下:"}\n\n'
         review_note += response_content + "\n\n---\n\n---\n\n"
         log.info(f"对 {new_path} review结束")
         return review_note
     except Exception as e:
         log.error(f"GPT error:{e}")
+        return f"""# 📚`{change['new_path']}`\n\n
+### ⚠️ 代码审查失败
+- 原因：{str(e)}
+- 请人工review此文件\n\n---\n\n---\n\n"""
 
 
 def remove_think_content(content):
