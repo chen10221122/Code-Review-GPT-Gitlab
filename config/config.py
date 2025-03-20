@@ -7,12 +7,14 @@ llm_api_impl = "large_model.api.default_api.DefaultApi"
 # 默认使用认UnionLLM，参考：https://github.com/EvalsOne/UnionLLM/tree/main/docs
 # UnionLLM兼容LiteLLM，参考LiteLLM文档：https://docs.litellm.ai/docs
 
-
+# 本地模型
 api_config = {
     "api_base": "http://localhost:11434",  # ✔️ 端口正确
     "model": "deepseek-r1:1.5b",  # ✔️ 根据实际模型名称修改
     "provider": "ollama",  # ✔️ 无需调整
 }
+
+
 
 # api_config = {
 #     "api_key": "your deepseek key",

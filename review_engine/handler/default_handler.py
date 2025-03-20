@@ -59,10 +59,17 @@ def generate_review_note(change, model):
         ]
         log.info("\n🤖 发送给模型的消息:")
         log.info(f"发送给gpt 内容如下：{messages}")
+
+        # 调用模型
         model.generate_text(messages)
         new_path = change["new_path"]
         log.info(f"对 {new_path} review中...")
+
+        # 获取模型返回内容并清理
         response_content = model.get_respond_content().replace("\n\n", "\n")
+        # 移除 think 标签及其内容
+        response_content = remove_think_content(response_content)
+
         log.info(f"模型返回内容：\n{response_content}")
         total_tokens = model.get_respond_tokens()
         review_note = f"# 📚`{new_path}`" + "\n\n"
@@ -72,6 +79,15 @@ def generate_review_note(change, model):
         return review_note
     except Exception as e:
         log.error(f"GPT error:{e}")
+
+
+def remove_think_content(content):
+    """移除 think 标签及其内容"""
+    import re
+
+    # 移除 <think>...</think> 块
+    content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL)
+    return content.strip()
 
 
 class MainReviewHandle(ReviewHandle):
@@ -163,13 +179,6 @@ class MainReviewHandle(ReviewHandle):
                 # 添加评论发送日志
                 log.info("评论发送完成")
 
-                reply.add_reply(
-                    {
-                        "content": review_info,
-                        "msg_type": "MAIN, SINGLE",
-                        "target": "all",
-                    }
-                )
                 reply.add_reply(
                     {
                         "title": "__MAIN_REVIEW__",
