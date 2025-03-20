@@ -189,10 +189,12 @@ docker run -d --network bridge --add-host=host.docker.internal:host-gateway -v .
 ```bash
 git clone git@github.com:mimo-x/Code-Review-GPT-Gitlab.git
 ```
+
 2.**安装依赖**
 ```bash
 pip install -r requirements.txt
 ```
+
 3.**修改配置文件**
 ```bash
 vim config/config.py
@@ -202,6 +204,7 @@ vim config/config.py
 ```bash
 python3 app.py
 ```
+
 #### **配置Gitlab webhook**
 > 填写```Webhook URL```时，请在域名后添加路径```/git/webhook```，例如：```http://example.com/git/webhook```
 <p align="center">

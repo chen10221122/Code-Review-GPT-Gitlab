@@ -7,11 +7,18 @@ llm_api_impl = "large_model.api.default_api.DefaultApi"
 # 默认使用认UnionLLM，参考：https://github.com/EvalsOne/UnionLLM/tree/main/docs
 # UnionLLM兼容LiteLLM，参考LiteLLM文档：https://docs.litellm.ai/docs
 
+
 api_config = {
-    "api_key": "your deepseek key",
-    "model": 'deepseek-chat',
-    "provider": "deepseek",
+    "api_base": "http://localhost:11434",  # ✔️ 端口正确
+    "model": "deepseek-r1:1.5b",  # ✔️ 根据实际模型名称修改
+    "provider": "ollama",  # ✔️ 无需调整
 }
+
+# api_config = {
+#     "api_key": "your deepseek key",
+#     "model": 'deepseek-chat',
+#     "provider": "deepseek",
+# }
 
 # demo-proxy-gpt
 # api_config = {
@@ -21,7 +28,7 @@ api_config = {
 #     "provider": "openai",
 # }
 
-# demo-ollama 
+# demo-ollama
 # api_config = {
 #     "api_base": "http://localhost:11434",
 #     "model": "llama3.2",
@@ -47,7 +54,7 @@ GPT_MESSAGE = """
 
 ### 😀代码评分：{变量1}
 
-#### ✅代码优点：
+#### ✅代码优点：@
 {变量5}
 
 #### 🤔问题点：
@@ -64,10 +71,10 @@ GPT_MESSAGE = """
 
 # ------------------Gitlab info--------------------------
 # Gitlab url
-GITLAB_SERVER_URL = "https://gitlab.com"
+GITLAB_SERVER_URL = "https://git.finchina.com/"
 
 # Gitlab private token
-GITLAB_PRIVATE_TOKEN = "gitlab private token"
+GITLAB_PRIVATE_TOKEN = "aw_g2a8yisGyfoxsnFSk"
 
 # Gitlab modifies the maximum number of files
 MAX_FILES = 50
@@ -81,7 +88,19 @@ DINGDING_SECRET = "S********************************950f"
 
 # ------------- code review settings --------------------
 # expect file types
-EXCLUDE_FILE_TYPES = ['.py', '.java', '.class', '.vue', ".go",".c",".cpp"]
+EXCLUDE_FILE_TYPES = [
+    ".js",
+    ".ts",
+    ".tsx",
+    ".less",
+    ".py",
+    ".java",
+    ".class",
+    ".vue",
+    ".go",
+    ".c",
+    ".cpp",
+]
 
 # ignore file types
 IGNORE_FILE_TYPES = ["mod.go"]
