@@ -65,11 +65,17 @@ class WebhookListener:
     """
         )
 
+        # if (
+        #     gitlab_payload.get("object_attributes").get("state") == "opened"
+        #     and gitlab_payload.get("object_attributes").get("merge_status")
+        #     == "can_be_merged"
+        # ):
+
         if (
-            gitlab_payload.get("object_attributes").get("state") == "opened"
-            and gitlab_payload.get("object_attributes").get("merge_status")
-            == "preparing"
+            gitlab_payload.get("object_attributes", {}).get("state") == "opened"
+            and gitlab_payload.get("object_attributes", {}).get("action") == "open"
         ):
+
             log.info("首次merge_request ", gitlab_payload)
             project_id = gitlab_payload.get("project")["id"]
             merge_request_iid = gitlab_payload.get("object_attributes")["iid"]

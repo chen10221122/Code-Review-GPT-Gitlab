@@ -38,16 +38,17 @@ def chat_review(changes, generate_review, *args, **kwargs):
 @retry(stop_max_attempt_number=3, wait_fixed=60000)
 def generate_review_note(change, model):
     try:
-        
+
         log.info("\n📝 开始审查文件")
-        log.info(f"""
+        log.info(
+            f"""
         文件路径: {change['new_path']}
         变更类型: {'新文件' if change['new_file'] else '修改'}
-        """)
-        
+        """
+        )
+
         content = filter_diff_content(change["diff"])
         log.info(f"处理文件：{change['new_path']}")
-        log.info(f"代码变更内容：\n{content}")
 
         messages = [
             {"role": "system", "content": GPT_MESSAGE},
@@ -89,52 +90,58 @@ class MainReviewHandle(ReviewHandle):
 
         # 添加变更文件数量日志
         log.info(f"检测到 {len(changes)} 个文件变更")
-        
-        log.info(f"""
+
+        log.info(
+            f"""
 变更文件信息:
 - 文件总数: {len(changes) if changes else 0}
-- 文件列表:""")
-        
+- 文件列表:"""
+        )
+
         if changes:
             for change in changes:
-                log.info(f"""
+                log.info(
+                    f"""
     - 文件: {change['new_path']}
     - 类型: {'需要审查' if any(change["new_path"].endswith(ext) for ext in EXCLUDE_FILE_TYPES) else '不需要审查'}
     - 状态: {'忽略' if any(change["new_path"].endswith(ext) for ext in IGNORE_FILE_TYPES) else '正常'}
-    """)
+    """
+                )
 
         merge_info = gitlabMergeRequestFetcher.get_info()
         self.default_handle(changes, merge_info, hook_info, reply, model)
 
     def default_handle(self, changes, merge_info, hook_info, reply, model):
-        
-        
+
         log.info(f"处理状态检查:")
         if not changes:
             log.info("❌ 没有检测到文件变更")
             return
-        
+
         if len(changes) > MAX_FILES:
             log.info(f"❌ 文件数量 ({len(changes)}) 超过最大限制 ({MAX_FILES})")
             return
-        
+
         # 检查是否有需要审查的文件
         review_files = [
-            change for change in changes
+            change
+            for change in changes
             if any(change["new_path"].endswith(ext) for ext in EXCLUDE_FILE_TYPES)
             and not any(change["new_path"].endswith(ext) for ext in IGNORE_FILE_TYPES)
         ]
-        
+
         if not review_files:
             log.info("❌ 没有需要审查的文件类型")
             return
-        
-        log.info(f"""
+
+        log.info(
+            f"""
 ✅ 审查条件检查通过:
 - 文件总数: {len(changes)} <= {MAX_FILES}
 - 需要审查的文件数: {len(review_files)}
-""")
-        
+"""
+        )
+
         if changes and len(changes) <= MAX_FILES:
 
             # 添加开始审查日志
